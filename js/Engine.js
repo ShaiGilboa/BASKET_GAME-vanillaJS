@@ -45,7 +45,7 @@ class Engine {
             restart(lives);
             return;
         }
-        setTimeout(this.gameLoop, 50);
+        setTimeout(this.gameLoop, 20);
         if (this.scoreCount === 10){
             this.scoreCount = 0;
             this.score += 5;
@@ -74,14 +74,12 @@ class Engine {
     pauseGame = () => {
         if (pause) {
             pause = false;
-            // console.log(milliseconds)
             gameTimeLoop = setInterval(() => {
                 milliseconds++;
             }, 1);
             this.gameLoop();
         } else {
             pause = true;
-            // console.log(milliseconds)
             clearInterval(gameTimeLoop);
         }
     }

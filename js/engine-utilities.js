@@ -2,7 +2,7 @@
 const nextEnemySpot = enemies => {
     const enemySpots = GAME_WIDTH / ENEMY_WIDTH;
 
-    const spotsTaken = [];
+    const spotsTaken = [false, false, false, false, false,false,false,false,false,false];
     enemies.forEach(enemy => {
         spotsTaken[enemy.spot] = true;
     });
@@ -54,8 +54,11 @@ const handleRestartClick = (event) => {
     restartBtn.removeEventListener('click', handleRestartClick);
     // console.log('restart')
     app.innerHTML = '';
-    for(let i = 1; i<=3; i++) document.getElementById(`life#${i}`).style.display = 'inline-block';
     lives = 4;
+    // gameEngine.enemies = [];
+    clearInterval(gameTimeLoop);
+    gameEngine.score = 0;
+    gameEngine.scoreCount = 0;
     startGame();
 }
 
@@ -63,26 +66,30 @@ const handleNextRoundClick = (event) => {
     gameEngine.enemies.forEach(enemy => {
         enemy.root.removeChild(enemy.domElement)
     })
+    clearInterval(gameTimeLoop);
     gameTimeLoop = setInterval(() => {
             milliseconds++;
         }, 1);
     gameEngine.lastFrame = undefined;
     gameEngine.enemies = [];
     document.addEventListener("keydown", keydownHandler);
-    restartBtn.style.display = 'none'   
+    restartBtn.style.display = 'none';
+    gameEngine.player.x = GAME_WIDTH/2;
+    gameEngine.player.y = GAME_HEIGHT - PLAYER_HEIGHT;
+    gameEngine.player.domElement.style.left = `${GAME_WIDTH/2}px`;
+    gameEngine.player.domElement.style.top = `${GAME_HEIGHT - PLAYER_HEIGHT}px`;
     gameEngine.gameLoop();
 }
 
 const takeOneLife = () => {
-    // console.log(lives)
     restartBtn.style.display = 'inline-block';
     restartBtn.innerText = "next round";
-    document.getElementById(`life#${lives}`).style.display = 'none';
+    main.removeChild(document.getElementById(`life#${lives}`))
     restartBtn.addEventListener('click', handleNextRoundClick);
+    lives --;
 }
 
 const restart = () => {
-    lives --;
     clearInterval(gameTimeLoop);
     if (lives === 0){
         restartBtn.style.display = 'inline-block';

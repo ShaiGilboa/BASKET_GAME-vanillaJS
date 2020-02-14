@@ -6,8 +6,20 @@ let restartBtn = undefined;
 
 let scoreTitle = undefined;
 
+const createLives = (lives) => {
+    console.log('loop ', lives)
+    for (let i = 1; i <= lives; i++){
+        let life = document.createElement('img');
+        life.src = "./images/player.png";
+        life.id = `life#${i}`;
+        main.appendChild(life);
+    }
+
+}
+
 const startGame = () => {
     // GAME_WIDTH = PLAYER_WIDTH * randomIntegerInRange(1,4)*2;
+    clearInterval(gameTimeLoop);
     main = document.querySelector('body')
     main.style.margin = 0;
     app = document.getElementById('app');
@@ -16,6 +28,8 @@ const startGame = () => {
     app.style.overflow = 'hidden';
     app.style.top = PLAYER_HEIGHT;
     gameEngine = new Engine(app);
+    console.log(lives);
+    createLives(lives);
 
     restartBtn = document.createElement('button');
     createRestartBtn(restartBtn);
@@ -34,17 +48,28 @@ const startGame = () => {
 }
 
 const keydownHandler = event => {
-    if (event.code === "ArrowLeft") {
+
+    switch (event.code) {
+        case "ArrowLeft":
         gameEngine.player.moveLeft();
-    }
+        break;
 
-    if (event.code === "ArrowRight") {
+        case "ArrowRight":
         gameEngine.player.moveRight();
-    }
+        break;
 
-    if (event.code === "KeyP"){
-        gameEngine.pauseGame()
-    }
+        case "KeyP":
+        gameEngine.pauseGame();
+        break;
+
+        case "ArrowUp":
+        gameEngine.player.moveUp();
+        break;
+
+        case "ArrowDown":
+        gameEngine.player.moveDown();
+        break;
+}
 }
 
 startGame();

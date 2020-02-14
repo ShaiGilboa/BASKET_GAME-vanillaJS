@@ -5,29 +5,49 @@ class Player extends Entity{
     // We will be adding a DOM element to this parent DOM node.
     constructor(root) {
         super();
-        this.render(root, 'images/basket1.png',GAME_WIDTH/2, GAME_HEIGHT - PLAYER_HEIGHT - 10, 10);
+        this.render(root, 'images/basket1.png',GAME_WIDTH/2, GAME_HEIGHT - PLAYER_HEIGHT, 10);
         this.domElement.style.width = PLAYER_WIDTH;
         this.domElement.style.height = PLAYER_HEIGHT
         this.rect = this.domElement.getBoundingClientRect();
         this.lives = 3;
+        this.yAxisMove = PLAYER_HEIGHT/2;
     }
     // This method will be called when the user presses the left key. See in Engine.js
     // how we relate the key presses to this method
     moveLeft() {
         if (this.x > 0) {
             this.x = this.x - PLAYER_WIDTH;
-        
-        this.domElement.style.left = `${this.x}px`;
-        this.rect = this.domElement.getBoundingClientRect();
+            this.domElement.style.left = `${this.x}px`;
+            this.rect = this.domElement.getBoundingClientRect();
         }
     }
     // We do the same thing for the right key. See Engine.js to see when this happens.
     moveRight() {
         if (this.x + PLAYER_WIDTH < GAME_WIDTH) {
             this.x = this.x + PLAYER_WIDTH;
-        
-        this.domElement.style.left = `${this.x}px`;
-        this.rect = this.domElement.getBoundingClientRect();
+            this.domElement.style.left = `${this.x}px`;
+            this.rect = this.domElement.getBoundingClientRect();
+        }
+    }
+
+    moveUp() {
+        console.log("y", this.y)
+        if (this.y > 15) {
+            this.y = this.y - this.yAxisMove;
+            this.domElement.style.top = `${this.y}px`;
+            this.rect = this.domElement.getBoundingClientRect();
+        }
+    }
+    moveDown() {
+        console.log(this.y);
+        console.log(GAME_HEIGHT)
+        if (this.y + PLAYER_HEIGHT+ this.yAxisMove < GAME_HEIGHT) {
+            this.y = this.y + this.yAxisMove;
+            this.domElement.style.top = `${this.y}px`;
+            this.rect = this.domElement.getBoundingClientRect();
+        } else {
+            this.y = GAME_HEIGHT - PLAYER_HEIGHT;
+            this.domElement.style.top = `${this.y}px`;
         }
     }
 }
