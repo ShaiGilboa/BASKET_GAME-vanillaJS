@@ -1,0 +1,55 @@
+/* p {
+    visibility: hidden;
+    position: fixed;
+    background: red;
+    left: calc(50% - 225px)
+} */
+/* 
+body {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+
+    grid-template-areas: "side app side";
+}
+
+.side{
+    grid-area: "side";
+}
+
+#app{
+    grid-area: "app";
+} */
+
+/* .side-bar {
+    position: absolute;
+    /* width: calc(50% - 112.5px); 
+    background-color: red;
+    height: 100vh;
+}
+
+/* .points {
+    left:0;
+    background-color: blue;
+}
+
+.data {
+    right:0;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+} */ 
+
+.collected {
+    transition: ease-in-out 1s;
+    transform: scale(1.3);
+    opacity: 0;
+
+}
+
+img {
+    border-radius: 10px;
+}
