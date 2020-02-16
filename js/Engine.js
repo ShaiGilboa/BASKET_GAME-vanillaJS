@@ -1,8 +1,5 @@
 
-let gameTimeLoop = undefined;
-let pause =false;
-let milliseconds = 0;
-let lives = 4;
+
 
 class Engine {
 
@@ -27,7 +24,6 @@ class Engine {
         this.lastFrame = milliseconds;
 
         this.enemies.forEach(enemy => {
-            // console.log(enemy)
             enemy.update(timeDiff);
         });
 
@@ -37,21 +33,22 @@ class Engine {
         while (this.enemies.length < MAX_ENEMIES) {
 
             const spot = nextEnemySpot(this.enemies);
-            (randomIntegerInRange(1,3)%2 === 0)?this.enemies.push(new Enemy(this.root, spot)):this.enemies.push(new Prize(this.root, spot))
+            (randomIntegerInRange(1,11)%3 === 0)?this.enemies.push(newEnemy(this.root, spot)):this.enemies.push(newPrize(this.root, spot))
         }
 
         if (this.isPlayerDead()) {
             document.removeEventListener("keydown", keydownHandler);
-            restart(lives);
+            pause = true;
+            restart();
             return;
         }
-        setTimeout(this.gameLoop, 20);
         if (this.scoreCount === 10){
             this.scoreCount = 0;
             this.score += 5;
             scoreTitle.update(`score: ${this.score}`)
         }
         this.scoreCount++;
+        setTimeout(this.gameLoop, 20);
     }
 
     isPlayerDead = () => {
@@ -72,7 +69,10 @@ class Engine {
     }
 
     pauseGame = () => {
+        document.removeEventListener("keydown", keydownHandler);
         if (pause) {
+            document.addEventListener("keydown", keydownHandler);
+            app.removeChild(pauseMessage)
             pause = false;
             gameTimeLoop = setInterval(() => {
                 milliseconds++;
@@ -80,7 +80,10 @@ class Engine {
             this.gameLoop();
         } else {
             pause = true;
+            app.appendChild(pauseMessage)
             clearInterval(gameTimeLoop);
+            document.addEventListener("keydown", keydownPauseHandler);
         }
+
     }
 }

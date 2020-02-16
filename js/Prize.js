@@ -1,9 +1,13 @@
+const PRIZE1 = "./images/avocado.png"
+const PRIZE2 = "./images/pineapple.png"
+const PRIZE3 = "./images/tomato.png"
+
 class Prize extends Enemy {
 
-    constructor (root, prizeSpot){
+    constructor (root, prizeSpot, prizeKind){
     super(root, prizeSpot)
-    this.domElement.src = "./images/avocado.png"
-    this.domElement.style.width = '75px';
+    this.domElement.src = prizeKind
+    this.domElement.style.width = '70px';
     this.prize = true;
     this.collect = false;
     }

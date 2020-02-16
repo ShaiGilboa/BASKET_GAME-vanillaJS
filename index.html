@@ -1,24 +1,27 @@
 <html>
 <head>    
     <title>Nyan Kat</title> 
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet" />
 </head> 
 <body>
-    <div id="score-board" class="side-bar points">
-        <!-- <img src="./images/player.png" alt="" class="lives" id="life#1">
-        <img src="./images/player.png" alt="" class="lives" id="life#2">
-        <img src="./images/player.png" alt="" class="lives" id="life#3"> -->
+    <div id="game-window" class="game-window">
+        <div id="score-board" class="side-bar points">
+        </div>
+
+        <div id="app"></div> 
+        <div id="units" class="side-bar data"></div>
+        
+        <script src="js/Text.js"></script>
+        <script src="js/engine-utilities.js"></script> 
+        <script src="js/data.js"></script> 
+        <script src="js/Entity.js"></script>
+        <script src="js/Enemy.js"></script> 
+        <script src="js/Prize.js"></script>
+        <script src="js/Engine.js"></script> 
+        <script src="js/Player.js"></script> 
+        <script src="js/main.js"></script> 
+
     </div>
-    <div id="app"></div> 
-    <div id="units" class="side-bar data"></div>
-    <script src="js/Text.js"></script>
-    <script src="js/engine-utilities.js"></script> 
-    <script src="js/data.js"></script> 
-    <script src="js/Entity.js"></script>
-    <script src="js/Enemy.js"></script> 
-    <script src="js/Prize.js"></script>
-    <script src="js/Engine.js"></script> 
-    <script src="js/Player.js"></script> 
-    <script src="js/main.js"></script> 
 </body> 
 </html> 

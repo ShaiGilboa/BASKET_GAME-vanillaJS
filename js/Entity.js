@@ -16,5 +16,7 @@ class Entity {
         // this.rect = this.domElement.getBoundingClientRect();
         root.appendChild(this.domElement);
         this.rect = this.domElement.getBoundingClientRect();
+        this.domElement.id = `enemy${gameTimeLoop+randomIntegerInRange(1,100)}`
+        this.domElement.style.border = '-1px red solid'
     }
 }

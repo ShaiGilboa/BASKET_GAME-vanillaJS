@@ -1,14 +1,14 @@
-// The Enemy class will contain information about the enemy such as
-// its position on screen. It will also provide methods for updating
-// and destroying the enemy.
+const ENEMY1 = './images/barbell.png'
+const ENEMY2 = './images/brick.png'
+const ENEMY3 = './images/enemy2.png'
 class Enemy extends Entity{
 
-    constructor(theRoot, enemySpot) {
+    constructor(theRoot, enemySpot, enemyKind) {
         super();
-        this.render(theRoot, './images/enemy2.png', enemySpot * ENEMY_WIDTH, -ENEMY_HEIGHT, 5);
+        this.render(theRoot, enemyKind, enemySpot * ENEMY_WIDTH, -ENEMY_HEIGHT, 5);
         this.spot = enemySpot;
         this.destroyed = false;
-        this.speed = Math.random() * 2;
+        this.speed = Math.random() * 2 + 0.25;
         this.prize = false;
     }
 
