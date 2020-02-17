@@ -1,4 +1,3 @@
-
 const newEnemy = (root, spot) => {
     let x = randomIntegerInRange(1,4);
     switch (x){
@@ -60,28 +59,31 @@ const nextEnemySpot = enemies => {
     enemies.forEach(enemy => {
         spotsTaken[enemy.spot] = true;
     });
-
     let candidate = undefined;
     while (candidate === undefined || spotsTaken[candidate]) {
-
         candidate = Math.floor(Math.random() * enemySpots);
     }
-
     return candidate;
 }
 
 const addBackground = root => {
-    const bg = document.createElement("img");
+    bg = document.createElement("img");
 
-    bg.src = 'images/corn-field.jpg';
+    // bg.style.border = 'images/corn-field.jpg';
     bg.style.height = `${GAME_HEIGHT}px`;
     bg.style.width = `${GAME_WIDTH}px`;
 
     root.append(bg);
 }
 
-const overLapping = (player, enemy) => {
+const endCase = () => {
+    document.removeEventListener("keydown", keydownHandler);
+    pause = true;
+    restart();
+}
 
+const overLapping = (player, enemy) => {
+    if(enemy.collect === true)return false;
     if ((enemy.bottom >= player.top && enemy.top < player.bottom-15) && (player.left < enemy.right && player.right > enemy.left))   
     // if ((player.x < enemy.x+ENEMY_WIDTH && player.x+PLAYER_WIDTH > enemy.x) && (enemy.y+ENEMY_HEIGHT > player.y && enemy.y < player.y +PLAYER_HEIGHT))
     {
@@ -93,14 +95,6 @@ const overLapping = (player, enemy) => {
 
 const createRestartBtn = (restartBtn) => {
     restartBtn.innerText = 'Game Over\nPress space to restart';
-    // restartBtn.style.textAlign = 'center';
-    // restartBtn.style.position = 'absolute';
-    // restartBtn.style.left = `${GAME_WIDTH/2-50}px`;
-    // restartBtn.style.top = `${GAME_HEIGHT/2-20}px`;
-    // restartBtn.style.width = '100px';
-    // restartBtn.style.height = '40px';
-    // restartBtn.style.zIndex = 190;
-    // restartBtn.style.display = 'none';
     app.appendChild(restartBtn)
 }
 
@@ -114,50 +108,51 @@ const createLives = (lives) => {
     }
 }
 
-
-const handleRestart = (event) => {
-    if (event.code === "Space"){
-    document.removeEventListener('keydown', handleRestart);
-    app.innerHTML = '';
-    scoreBoard.innerHTML ='';
-    clearInterval(gameTimeLoop);
-    gameEngine.score = 0;
-    gameEngine.scoreCount = 0;
-    gameEngine.enemies = [];
-    startGame();
-    }
-}
-
-const handleNextRound = () => {
-    gameEngine.enemies.forEach(enemy => {
-        enemy.root.removeChild(enemy.domElement)
-    })
-    clearInterval(gameTimeLoop);
+const gameLoopTimer = () => {
     gameTimeLoop = setInterval(() => {
             milliseconds++;
-        }, 1);
-    gameEngine.lastFrame = undefined;
-    gameEngine.enemies = [];
-    document.addEventListener("keydown", keydownHandler);
-    restartBtn.style.display = 'none';
+            if(milliseconds % 100 === 0){
+                roundTime.secondPassed();
+            }
+        }, 10);
+}
+
+const playerToStartPosition = () => {
     gameEngine.player.x = GAME_WIDTH/2;
     gameEngine.player.y = GAME_HEIGHT - PLAYER_HEIGHT;
     gameEngine.player.domElement.style.left = `${GAME_WIDTH/2}px`;
     gameEngine.player.domElement.style.top = `${GAME_HEIGHT - PLAYER_HEIGHT}px`;
     gameEngine.player.rect = gameEngine.player.domElement.getBoundingClientRect();
+}
+
+const handleNextRound = () => {
+    roundTime.seconds = roundSeconds;
+    roundTime.minutes = roundMinutes;
+    gameEngine.enemies.forEach(enemy => {
+    enemy.root.removeChild(enemy.domElement)
+    })
+    clearInterval(gameTimeLoop);
+    gameEngine.lastFrame = undefined;
+    gameEngine.enemies = [];
+    document.addEventListener("keydown", keydownHandler);
+    restartBtn.style.display = 'none';
+
+    playerToStartPosition();
+    gameLoopTimer();
     pause = false;
+    gameEngine.player.src = "images/basket1.png"
+    gameEngine.player.domElement.src = "images/basket1.png"
+
     gameEngine.gameLoop();
 }
 
 const takeOneLife = () => {
-    // console.log(gameEngine.ene)
     restartBtn.style.display = 'inline-block';
     restartBtn.innerText = "Oh No!\nPress Space to continue";
     scoreBoard.removeChild(document.getElementById(`life#${gameEngine.player.lives}`))
-    document.addEventListener('keydown', nextRoundHandler);
     gameEngine.player.lives --;
+    document.addEventListener('keydown', nextRoundHandler);
 }
-
 
 const nextRoundHandler = (event) => {
     if (event.code === "Space") {
@@ -166,14 +161,56 @@ const nextRoundHandler = (event) => {
     }
 }
 
+const handleRestart = (event) => {
+    if (event.code === "Space"){
+    prizesCollected = 0;    
+    document.removeEventListener('keydown', handleRestart);
+    app.innerHTML = '';
+    scoreBoard.innerHTML ='';
+    clearInterval(gameTimeLoop);
+    gameEngine.enemies = [];
+    startGame();
+    }
+}
+const nextLevel = (event) => {
+    if (event.code === "Space"){
+        gameEngine.enemies.forEach(enemy => {
+        enemy.root.removeChild(enemy.domElement)
+    })
+    document.removeEventListener('keydown', nextLevel);
+    app.innerHTML = '';
+    scoreBoard.innerHTML ='';
+    clearInterval(gameTimeLoop);
+    prizesCollected = 0;    
+    prizesNeeded+=5;
+    roundSeconds+=15;
+    enemySpeed+=1;
+    enemyRatio+=1;
+    gameEngine.enemies = [];
+    level++;
+    startGame();
+    }
+}
+
 const restart = () => {
     clearInterval(gameTimeLoop);
-    if (gameEngine.player.lives === 0){
+
+    if (prizesCollected === prizesNeeded) {
         restartBtn.style.display = 'inline-block';
-        restartBtn.innerText = 'Game Over\nPress space to restart'
-        document.addEventListener('keydown', handleRestart);
-    } else {
-        takeOneLife();
+        restartBtn.innerText = 'Success!\nPress space for next level';
+        document.addEventListener('keydown', nextLevel);
+    }else {
+        gameEngine.player.src = "images/brokenBasket1.png"
+        gameEngine.player.domElement.src = "images/brokenBasket1.png"
+        if (gameEngine.player.lives === 0){
+            restartBtn.style.display = 'inline-block';
+            restartBtn.innerText = 'Game Over\nPress space to restart';
+            level = 1;
+            prizesNeeded = 2;
+            document.addEventListener('keydown', handleRestart);
+        } else {
+            takeOneLife();
+        }
     }
 }
 

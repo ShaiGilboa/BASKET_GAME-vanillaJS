@@ -8,7 +8,7 @@ class Enemy extends Entity{
         this.render(theRoot, enemyKind, enemySpot * ENEMY_WIDTH, -ENEMY_HEIGHT, 5);
         this.spot = enemySpot;
         this.destroyed = false;
-        this.speed = Math.random() * 2 + 0.25;
+        this.speed = Math.random() * enemySpeed + 0.25;
         this.prize = false;
     }
 

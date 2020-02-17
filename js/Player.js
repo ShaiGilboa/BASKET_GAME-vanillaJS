@@ -8,9 +8,8 @@ class Player extends Entity{
         this.render(root, 'images/basket1.png',GAME_WIDTH/2, GAME_HEIGHT - PLAYER_HEIGHT, 10);
         this.domElement.style.width = PLAYER_WIDTH;
         this.domElement.style.height = PLAYER_HEIGHT
-        this.yAxisMove = PLAYER_HEIGHT/2;
+        this.yAxisMove = PLAYER_HEIGHT-15;
         this.rect = this.domElement.getBoundingClientRect();
-        
         this.lives = LIVES_AMOUNT;
     }
     // This method will be called when the user presses the left key. See in Engine.js
@@ -32,7 +31,7 @@ class Player extends Entity{
     }
 
     moveUp() {
-        if (this.y > 15) {
+        if (this.y > this.yAxisMove) {
             this.y = this.y - this.yAxisMove;
             this.domElement.style.top = `${this.y}px`;
             this.rect = this.domElement.getBoundingClientRect();

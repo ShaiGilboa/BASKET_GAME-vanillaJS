@@ -1,6 +1,3 @@
-
-
-
 class Engine {
 
     constructor(theRoot) {
@@ -19,7 +16,8 @@ class Engine {
 
     gameLoop = () => {
         if (pause) return;
-        if (this.lastFrame === undefined) this.lastFrame = milliseconds;
+
+        if (this.lastFrame === undefined) this.lastFrame = milliseconds-1;
         let timeDiff = milliseconds - this.lastFrame;
         this.lastFrame = milliseconds;
 
@@ -33,21 +31,14 @@ class Engine {
         while (this.enemies.length < MAX_ENEMIES) {
 
             const spot = nextEnemySpot(this.enemies);
-            (randomIntegerInRange(1,11)%3 === 0)?this.enemies.push(newEnemy(this.root, spot)):this.enemies.push(newPrize(this.root, spot))
+            (randomIntegerInRange(1,101)%enemyRatio === 0)?this.enemies.push(newPrize(this.root, spot)):this.enemies.push(newEnemy(this.root, spot))
         }
 
         if (this.isPlayerDead()) {
-            document.removeEventListener("keydown", keydownHandler);
-            pause = true;
-            restart();
+            endCase();
             return;
         }
-        if (this.scoreCount === 10){
-            this.scoreCount = 0;
-            this.score += 5;
-            scoreTitle.update(`score: ${this.score}`)
-        }
-        this.scoreCount++;
+        
         setTimeout(this.gameLoop, 20);
     }
 
@@ -58,8 +49,7 @@ class Engine {
             if(overLapping(this.player.rect, enemy.rect)){
                 if (enemy.prize===true) {
                     prize = enemy.prize;
-                    if (enemy.collect === false)this.score += 100;
-                    enemy.collected();
+                    if(enemy.collect===false)enemy.collected();
                 } else {
                     ret = true;
                 }
@@ -74,9 +64,7 @@ class Engine {
             document.addEventListener("keydown", keydownHandler);
             app.removeChild(pauseMessage)
             pause = false;
-            gameTimeLoop = setInterval(() => {
-                milliseconds++;
-            }, 1);
+            gameLoopTimer();
             this.gameLoop();
         } else {
             pause = true;

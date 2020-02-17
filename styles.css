@@ -14,6 +14,7 @@
     max-width: 750px;
     margin:0 auto;
     background-color: red;
+    height: 54px;
 }
 
 body {
@@ -46,4 +47,13 @@ width: 100vw;
     border: 10px solid green;
     border-radius: 10px;
     z-index: 10;
+}
+
+.level {
+    font-size: large;
+    color: greenyellow;
+}
+
+.level-number {
+    z-index: 20000;
 }
