@@ -1,23 +1,91 @@
-// We create an instance of the Engine class. Looking at our index.html,
-// we see that it has a div with an id of \`"app"\`  
-const gameEngine = new Engine(document.getElementById("app"));
-// keydownHandler is a variable that refers to a function. The function has one parameter
-// (does the parameter name matter?) which is called event. As we will see below, this function
-// will be called every time the user presses a key. The argument of the function call will be an object.
-// The object will contain information about the key press, such as which key was pressed. 
+const startGame = () => {
+    pause = false;
+    // GAME_WIDTH = PLAYER_WIDTH * randomIntegerInRange(1,4)*2;
+    clearInterval(gameTimeLoop);
+    main = document.querySelector('body')
+    // main.style.margin = 0;
+    main.style.backgroundImage = 'url("images/corn-field.jpg")';
+    main.style.backgroundSize = 'cover';
+
+    app = document.getElementById('app');
+    app.style.position = 'absolute';
+    app.style.left = `calc(50% - ${GAME_WIDTH/2}px`;
+    app.style.overflow = 'hidden';
+    app.style.maxWidth = `${GAME_WIDTH}px`
+    app.style.top = PLAYER_HEIGHT;
+    scoreBoard = document.getElementById('score-board');
+    gameEngine = new Engine(app);
+
+    pauseMessage = document.createElement('h2');
+    pauseMessage.classList.add('message')
+    pauseMessage.innerText = "Game Paused\nMove to continue"
+    createLives(gameEngine.player.lives);
+
+    restartBtn = document.createElement('h2');
+    restartBtn.classList.add('message')
+    restartBtn.style.display = 'none'
+    createRestartBtn(restartBtn);
+
+    levelNumber = document.getElementById('level-number');
+    levelNumber.innerText = level;
+    
+    document.addEventListener("keydown", keydownHandler);
+
+    roundTime = new Time(roundSeconds, roundMinutes);
+
+    timeLeft = new Text (app, `calc(50% - ${GAME_WIDTH/2}px + 5px`, '0px', 'div')
+    timeLeft.update(`Time Left: ${roundTime.minutes}:${roundTime.seconds}`)
+
+    prizeCollection = new Text (app, `70%`, '0px', 'div')
+    prizeCollection.update(`collected ${prizesCollected}/${prizesNeeded}`)
+    
+    gameLoopTimer();
+    
+
+    gameEngine.gameLoop();
+    
+}
+
 const keydownHandler = event => {
-    // event.code contains a string. The string represents which key was press. If the
-    // key is left, then we call the moveLeft method of gameEngine.player (where is this method defined?)
-    if (event.code === "ArrowLeft") {
+
+    switch (event.code) {
+        case "ArrowLeft":
         gameEngine.player.moveLeft();
-    }
-    // If \`event.code\` is the string that represents a right arrow keypress,
-    // then move our hamburger to the right
-    if (event.code === "ArrowRight") {
+        break;
+
+        case "ArrowRight":
         gameEngine.player.moveRight();
+        break;
+
+        case "Space":
+        case "KeyP":
+        gameEngine.pauseGame();
+        break;
+
+        case "ArrowUp":
+        gameEngine.player.moveUp();
+        break;
+
+        case "ArrowDown":
+        gameEngine.player.moveDown();
+        break;
+}
+}
+
+function resize() {
+    if(!pause)gameEngine.pauseGame();
+    if(GAME_HEIGHT !== window.innerHeight - PLAYER_HEIGHT){
+        if(GAME_HEIGHT < window.innerHeight - PLAYER_HEIGHT){
+            gameEngine.player.y = GAME_HEIGHT - PLAYER_HEIGHT;
+            gameEngine.player.top = `${GAME_HEIGHT - PLAYER_HEIGHT}px`;
+        }
+        GAME_HEIGHT = window.innerHeight - PLAYER_HEIGHT;
+        app.style.height = GAME_HEIGHT;
+
+        bg.style.height = `${GAME_HEIGHT-1}px`;
     }
 }
-// We add an event listener to document. document the ancestor of all DOM nodes in the DOM.
-document.addEventListener("keydown", keydownHandler);
-// We call the gameLoop method to start the game
-gameEngine.gameLoop();
+
+GAME_HEIGHT = window.innerHeight - PLAYER_HEIGHT
+window.onresize = resize;
+startGame();
